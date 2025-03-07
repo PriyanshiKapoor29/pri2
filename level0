@@ -1,0 +1,42 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def load_and_display_images(filepath, num_images=5):
+    """
+    Loads a dataset from a NumPy .npy file, checks its shape,
+    displays a few images, and verifies greyscale format.
+
+    Args:
+        filepath (str): Path to the .npy file.
+        num_images (int): Number of images to display.
+    """
+    try:
+        dataset = np.load(filepath)
+        print("Dataset shape:", dataset.shape)
+
+        if len(dataset.shape) == 3: #handle 1 channel images
+            height, width, channels = dataset.shape
+        elif len(dataset.shape) == 4: #handle multi image datasets
+            num_samples, height, width, channels = dataset.shape
+        else:
+            print("Unsupported dataset shape. Please provide a 3D or 4D dataset.")
+            return
+
+        if channels == 1:
+            print("Dataset is in greyscale format.")
+        else:
+            print(f"Dataset has {channels} channels. If it is an image dataset, then it is not greyscale.")
+
+        # Display images
+        if len(dataset.shape) == 3: #handle single image dataset
+            plt.imshow(dataset, cmap='gray' if channels == 1 else None)
+            plt.title("Image")
+            plt.show()
+        else:
+            for i in range(min(num_images, num_samples)):
+                plt.imshow(dataset[i], cmap='gray' if channels == 1 else None)
+                plt.title(f"Image {i+1}")
+                plt.show()
+
+    except FileNotFoundError:
+        print(f"Error: File not found at
